@@ -1,22 +1,14 @@
-#! /usr/bin/env bash
-set -eu
+#! /bin/bash
+host=${mysql_h:-localhost}
+sed -i 's/127.0.0.1/'"$host"'/g' /opt/emqttd/plugins/emqttd_plugin_mysql/etc/plugin.config
 
-COMMAND="/opt/emqttd/bin/emqttd start"
+username=${mysql_u:-root}
+sed -i 's/mysql_username/'"$username"'/g' /opt/emqttd/plugins/emqttd_plugin_mysql/etc/plugin.config
 
-PONG="pong"
+password=${mysql_p:-root}
+sed -i 's/mysql_password/'"$password"'/g' /opt/emqttd/plugins/emqttd_plugin_mysql/etc/plugin.config
 
-function check_process {
-  OUTPUT="$(/opt/emqttd/bin/emqttd ping)"
-  RESP="${OUTPUT}"
-  if [ "$RESP" != "$PONG" ];
-  then exit 1000;
-  fi
-}
+database=${mysql_db:-venus}
+sed -i 's/dbname/'"$database"'/g' /opt/emqttd/plugins/emqttd_plugin_mysql/etc/plugin.config
 
-$COMMAND
-
-while : 
-do
-  check_process
-  sleep 0.5
-done
+/opt/emqttd/bin/emqttd start && sleep 10 && tail -f --retry /opt/emqttd/log/*
