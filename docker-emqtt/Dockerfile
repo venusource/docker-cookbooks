@@ -19,6 +19,7 @@ RUN unzip emqttd-centos64-1.0.1-beta-20160416.zip
 COPY emqttd.config emqttd/etc/
 COPY plugin.config emqttd/plugins/emqttd_plugin_mysql/etc/
 COPY start.sh /
+RUN chmod +x /start.sh
 
 EXPOSE 8083 18083
 
